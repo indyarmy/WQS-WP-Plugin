@@ -29,7 +29,7 @@ WQS has a few attributes that do not belong to the WP_Query class.
 
 `show_thumb=FALSE` - whether to display the post thumbnail (Featured Image), if any.
 
-`show_excerpt=FALSE` - whether to display the post excerpt.
+`show_excerpt=TRUE` - whether to display the post excerpt.
 
 `show_date=FALSE` - whether to display the post date below the excerpt.
 
@@ -75,7 +75,7 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
   * `$class` the CSS class from the shortcode
   * `$post_type` the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** a header to display above the resulting list
-* **Default** `<h3>$header</h3` or `NULL` if `$header` is empty
+* **Default** `<h3>$header</h3>` or `NULL` if `$header` is empty
 
 #### `wqs_pre_results` ####
 * executed before The Loop begins, but after we have confirmed there is at least one result to display

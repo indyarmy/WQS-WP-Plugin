@@ -244,7 +244,7 @@ class WQS {
 		$footer = NULL;
 		$defaults = array(
 			"class" => "wqs_list", // CSS class for output wrapper
-			"show_excerpt" => FALSE, // show the post excerpt
+			"show_excerpt" => TRUE, // show the post excerpt
 			"show_date" => FALSE, // show the post date
 			"show_thumb" => FALSE, // show the featured image, if any
 			"show_empty_message" => __("Sorry, no posts were found.", $self->plugin_slug), // the message displayed if no posts were found
