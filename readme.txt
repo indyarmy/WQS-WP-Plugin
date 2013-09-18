@@ -13,6 +13,8 @@ A shortcode wrapper for WP_Query.
 == Description ==
 **WPQuery Shortcode** is a lightweight shortcode that wraps the functionality of WP_Query.
 
+Several filters are built in to allow all kinds of messing with how the output is displayed. From a simple "Recent Posts" block on your page to displaying upcoming events from your calendar plugin to showing the most visited job postings, **WPQuery Shortcode** can do it all.
+
 == Installation ==
 1. Upload the `wpquery-shortcode` folder to your `wp-content/plugins/` folder
 2. Activate the plugin
@@ -66,7 +68,7 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 
 #### `wqs_header` ####
 * executed immediately after the `wqs_wrapper_start` filter
-* intended to allow theme authors to mess with the passed shortcode content (which is, itself, inteneded to be the header for the resulting list)
+* intended to allow theme authors to mess with the passed shortcode content (which is, itself, intended to be the header for the resulting list)
 * passed three parameters:
   * `$header` the content between the `[wqs]` and `[/wqs]` tags
   * `$class` the CSS class from the shortcode
