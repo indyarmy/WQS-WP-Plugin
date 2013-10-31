@@ -30,7 +30,7 @@ class WQSDefaults {
 	 * @return string The opening wrapper HTML (or whatever).
 	 */
 	public static function wqs_wrapper_start($class) {
-		return "<div class=\"$class\">";
+		return "<div class=\"{$class}\">";
 	}
 
 	/**
@@ -51,7 +51,7 @@ class WQSDefaults {
 	 */
 	public static function wqs_header($header) {
 		if ($header) {
-			return "<h3>$header</h3>";
+			return "<h3>{$header}</h3>";
 		}
 	}
 
@@ -123,7 +123,7 @@ class WQSDefaults {
 	 * @return string The HTML (or whatever) representing the excerpt.
 	 */
 	public static function wqs_show_excerpt($excerpt, $post_id, $class) {
-		return "<span class=\"{$class}_wqs_excerpt\">$excerpt</span>";
+		return "<span class=\"{$class}_wqs_excerpt\">{$excerpt}</span>";
 	}
 
 	/**
@@ -136,7 +136,7 @@ class WQSDefaults {
 	 * @return string The HTML (or whatever) representing the date string.
 	 */
 	public static function wqs_show_date($date, $post_id, $class) {
-		return "<span class=\"{$class}_wqs_date\">$date</span>";
+		return "<span class=\"{$class}_wqs_date\">{$date}</span>";
 	}
 
 	/**
@@ -147,6 +147,6 @@ class WQSDefaults {
 	 * @return string The HTML (or whatever) representing the "No Posts Found" message string.
 	 */
 	public static function wqs_result_empty($message) {
-		return "<p>$message</p>";
+		return "<p>{$message}</p>";
 	}
 }
