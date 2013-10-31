@@ -1,7 +1,6 @@
 <?php
 /**
  * WPQuery Shortcode.
- *
  * Use the [wqs][/wqs] shortcode as a wrapper for the WP_Query object.
  *
  * @package   WPQueryShortcode
@@ -10,6 +9,9 @@
  * @link      http://indyarmy.com/wpquery-shortcode/
  * @copyright 2013 IndyArmy Network, Inc.
  */
+
+// Load up the default filters.
+require_once(plugin_dir_path(__FILE__) . "class-wqsdefaults.php");
 
 /**
  * Plugin class.
@@ -28,7 +30,6 @@ class WQS {
 
 	/**
 	 * Unique identifier for your plugin.
-	 *
 	 * Use this value (not the variable name) as the text domain when internationalizing strings of text. It should
 	 * match the Text Domain file header in the main plugin file.
 	 *
@@ -61,39 +62,7 @@ class WQS {
 		add_shortcode("wqs", array($this, "wqs"));
 
 		// Add default filters.
-		if (!has_filter("wqs_wrapper_start", array("WQSDefaults", "wqs_wrapper_start"))) {
-			add_filter("wqs_wrapper_start", array("WQSDefaults", "wqs_wrapper_start"), 999);
-		}
-		if (!has_filter("wqs_wrapper_end", array("WQSDefaults", "wqs_wrapper_end"))) {
-			add_filter("wqs_wrapper_end", array("WQSDefaults", "wqs_wrapper_end"), 999);
-		}
-		if (!has_filter("wqs_header", array("WQSDefaults", "wqs_header"))) {
-			add_filter("wqs_header", array("WQSDefaults", "wqs_header"), 999);
-		}
-		if (!has_filter("wqs_pre_results", array("WQSDefaults", "wqs_pre_results"))) {
-			add_filter("wqs_pre_results", array("WQSDefaults", "wqs_pre_results"), 999, 2);
-		}
-		if (!has_filter("wqs_post_results", array("WQSDefaults", "wqs_post_results"))) {
-			add_filter("wqs_post_results", array("WQSDefaults", "wqs_post_results"), 999);
-		}
-		if (!has_filter("wqs_pre_item", array("WQSDefaults", "wqs_pre_item"))) {
-			add_filter("wqs_pre_item", array("WQSDefaults", "wqs_pre_item"), 999, 2);
-		}
-		if (!has_filter("wqs_post_item", array("WQSDefaults", "wqs_post_item"))) {
-			add_filter("wqs_post_item", array("WQSDefaults", "wqs_post_item"), 999);
-		}
-		if (!has_filter("wqs_show_thumb", array("WQSDefaults", "wqs_show_thumb"))) {
-			add_filter("wqs_show_thumb", array("WQSDefaults", "wqs_show_thumb"), 999, 3);
-		}
-		if (!has_filter("wqs_show_excerpt", array("WQSDefaults", "wqs_show_excerpt"))) {
-			add_filter("wqs_show_excerpt", array("WQSDefaults", "wqs_show_excerpt"), 999, 3);
-		}
-		if (!has_filter("wqs_show_date", array("WQSDefaults", "wqs_show_date"))) {
-			add_filter("wqs_show_date", array("WQSDefaults", "wqs_show_date"), 999, 3);
-		}
-		if (!has_filter("wqs_result_empty", array("WQSDefaults", "wqs_result_empty"))) {
-			add_filter("wqs_result_empty", array("WQSDefaults", "wqs_result_empty"), 999);
-		}
+		WQSDefaults::install_filters();
 	}
 
 	/**
@@ -225,145 +194,167 @@ class WQS {
 
 	/**
 	 * Core controller for the shortcode.
-	 *
 	 * This method combines the passed attributes with some defaults, creates a new WP_Query object, and returns the
 	 * results as a content string. Uses several filters and an action to allow theme and plugin authors to
 	 * manipulate the output.
 	 *
 	 * @since 1.0.0
 	 *
-	 * @param array $atts Attributes and WP_Query object attributes to use for this loop.
-	 * @param string $heading Text between the shortcode tags, typically used as a heading.
+	 * @param array  $atts      Attributes and WP_Query object attributes to use for this loop.
+	 * @param string $heading   Text between the shortcode tags, typically used as a heading.
+	 * @param bool   $raw       Return items as an array of objects instead of a finished string.
 	 *
-	 * @return string Contents contains the results of the WP_Query call, manipulated through the filters to be a string.
+	 * @return string|array contains the results of the WP_Query call, possiblymanipulated through the filters to be a string.
 	 */
-	public static function wqs($atts, $heading = NULL) {
+	public static function wqs($atts, $heading = NULL, $raw = FALSE) {
 		$self = self::get_instance();
 		$header = NULL;
 		$content = NULL;
 		$footer = NULL;
+		$items = array();
+		if ($raw !== TRUE) {
+			// Hack for the 3rd parameter, allowing theme and plugin authors to receive array output instead of string.
+			$raw = FALSE;
+		}
 		$defaults = array(
-			"class" => "wqs_list", // CSS class for output wrapper
-			"show_excerpt" => TRUE, // show the post excerpt
-			"show_date" => FALSE, // show the post date
-			"show_thumb" => FALSE, // show the featured image, if any
-			"show_empty_message" => __("Sorry, no posts were found.", $self->plugin_slug), // the message displayed if no posts were found
+			'class' => 'wqs_list', // CSS class for output wrapper
+			'show_excerpt' => TRUE, // show the post excerpt
+			'show_date' => FALSE, // show the post date
+			'show_thumb' => FALSE, // show the featured image, if any
+			'show_empty_message' => __('Sorry, no posts were found.', $self->plugin_slug), // the message displayed if no posts were found
 		);
 		$wpquery = array(
-			"author" => NULL,
-			"author_name" => NULL,
-			"cat" => NULL,
-			"category_name" => NULL,
-			"category__and" => array(),
-			"category__in" => array(),
-			"category__not_in" => array(),
-			"tag" => NULL,
-			"tag_id" => NULL,
-			"tag__and" => array(),
-			"tag__in" => array(),
-			"tag__not_in" => array(),
-			"tag_slug__and" => array(),
-			"tag_slug__in" => array(),
-			"tax_query" => array(),
-			"s" => NULL,
-			"p" => NULL,
-			"name" => NULL,
-			"page_id" => NULL,
-			"pagename" => NULL,
-			"post_parent" => NULL,
-			"post_parent__in" => array(),
-			"post_parent__not_in" => array(),
-			"post__in" => array(),
-			"post__not_in" => array(),
-			"post_type" => "post", // only grab posts
-			"post_status" => NULL,
-			"ignore_sticky_posts" => FALSE,
-			"order" => "DESC", // newest at the top
-			"orderby" => "date", // newest at the top
-			"year" => NULL,
-			"monthnum" => NULL,
-			"w" => NULL,
-			"day" => NULL,
-			"hour" => NULL,
-			"minute" => NULL,
-			"second" => NULL,
-			"m" => NULL,
-			"meta_key" => NULL,
-			"meta_value" => NULL,
-			"meta_value_num" => NULL,
-			"meta_compare" => "=", // default to meta_key = meta_value
-			"meta_query" => array(),
-			"perm" => NULL,
-			"cache_results" => TRUE,
-			"update_post_meta_cache" => TRUE,
-			"update_post_term_cache" => TRUE,
-			"posts_per_page" => 5, // only use 5 results
+			'author' => NULL,
+			'author_name' => NULL,
+			'cat' => NULL,
+			'category_name' => NULL,
+			'category__and' => array(),
+			'category__in' => array(),
+			'category__not_in' => array(),
+			'tag' => NULL,
+			'tag_id' => NULL,
+			'tag__and' => array(),
+			'tag__in' => array(),
+			'tag__not_in' => array(),
+			'tag_slug__and' => array(),
+			'tag_slug__in' => array(),
+			'tax_query' => array(),
+			's' => NULL,
+			'p' => NULL,
+			'name' => NULL,
+			'page_id' => NULL,
+			'pagename' => NULL,
+			'post_parent' => NULL,
+			'post_parent__in' => array(),
+			'post_parent__not_in' => array(),
+			'post__in' => array(),
+			'post__not_in' => array(),
+			'post_type' => 'post', // only grab posts
+			'post_status' => NULL,
+			'ignore_sticky_posts' => FALSE,
+			'order' => 'DESC', // newest at the top
+			'orderby' => 'date', // newest at the top
+			'year' => NULL,
+			'monthnum' => NULL,
+			'w' => NULL,
+			'day' => NULL,
+			'hour' => NULL,
+			'minute' => NULL,
+			'second' => NULL,
+			'm' => NULL,
+			'meta_key' => NULL,
+			'meta_value' => NULL,
+			'meta_value_num' => NULL,
+			'meta_compare' => '=', // default to meta_key = meta_value
+			'meta_query' => array(),
+			'perm' => NULL,
+			'cache_results' => TRUE,
+			'update_post_meta_cache' => TRUE,
+			'update_post_term_cache' => TRUE,
+			'posts_per_page' => 5, // only use 5 results
 		);
 		$options = shortcode_atts(array_merge($defaults, $wpquery), $atts, $self->plugin_slug);
 
 		// Check the following index to make sure the loop you're messing with is the right one!
-		$options["_wqs_post_type"] = $options["post_type"];
+		$options['_wqs_post_type'] = $options['post_type'];
 
 		// Mess with the WP_Query attributes here.
-		$options = apply_filters("wqs_pre_query", $options, $options["post_type"]);
+		$options = apply_filters('wqs_pre_query', $options, $options['post_type']);
 
 		$query = new WP_Query($options);
 
 		// Don't know what you'll use this for, but it's here just in case.
-		do_action("wqs_post_query", $query, $options["post_type"]);
+		do_action('wqs_post_query', $query, $options['post_type']);
 
 		// Wrap it, dude.
-		$header = apply_filters("wqs_wrapper_start", $options["class"], $options["post_type"]);
+		if (!$raw) {
+			$header = apply_filters('wqs_wrapper_start', $options['class'], $options['post_type']);
+		}
 
 		// Announce it!
-		$header .= apply_filters("wqs_header", $heading, $options["class"], $options["post_type"]);
+		if (!$raw) {
+			$header .= apply_filters('wqs_header', $heading, $options['class'], $options['post_type']);
+		}
 
 		if ($query->have_posts()) {
 			// Wrap it twice to be sure.
-			$content .= apply_filters("wqs_pre_results", $options["class"], $options["post_type"]);
+			$content .= apply_filters('wqs_pre_results', $options['class'], $options['post_type']);
 			while ($query->have_posts()) {
 				$query->the_post();
-				$post_type = get_post_type();
 				$id = get_the_ID();
+				if ($raw) {
+					$items[$id] = get_post();
+				} else {
+					$post_type = get_post_type();
 
-				// Need to stick anything in front of each item? Like an <li> element or something?
-				$content .= apply_filters("wqs_pre_item", $options["class"], $post_type);
+					// Need to stick anything in front of each item? Like an <li> element or something?
+					$content .= apply_filters('wqs_pre_item', $options['class'], $post_type);
 
-				$content .= "<a href=\"" . get_permalink() . "\" class=\"" . $options["class"] . "_title\">" . get_the_title() . "</a>";
+					$content .= '<a href="' . get_permalink() . '" class="' . $options["class"] . '_title">' . get_the_title() . '</a>';
 
-				if ($options["show_thumb"]) {
-					$content .= apply_filters("wqs_show_thumb", "", $id, $options["class"], $post_type);
+					if ($options['show_thumb']) {
+						$content .= apply_filters('wqs_show_thumb', '', $id, $options['class'], $post_type);
+					}
+
+					if ($options['show_excerpt']) {
+						$content .= apply_filters('wqs_show_excerpt', get_the_excerpt(), $id, $options['class'], $post_type);
+					}
+
+					if ($options['show_date']) {
+						$content .= apply_filters('wqs_show_date', get_the_date(), $id, $options['class'], $post_type);
+					}
+
+					// Close that <li> my friend.
+					$content .= apply_filters('wqs_post_item', $options['class'], $post_type);
 				}
-
-				if ($options["show_excerpt"]) {
-					$content .= apply_filters("wqs_show_excerpt", get_the_excerpt(), $id, $options["class"], $post_type);
-				}
-
-				if ($options["show_date"]) {
-					$content .= apply_filters("wqs_show_date", get_the_date(), $id, $options["class"], $post_type);
-				}
-
-				// Close that <li> my friend.
-				$content .= apply_filters("wqs_post_item", $options["class"], $post_type);
 			}
 
 			// Close your inside wrapper.
-			$content .= apply_filters("wqs_post_results", $options["class"], $options["post_type"]);
+			if (!$raw) {
+				$content .= apply_filters('wqs_post_results', $options['class'], $options['post_type']);
+			}
 		} else {
-			if ($options["show_empty_message"]) {
-				// No posts! Are you sure you spelled the post_type or category right?
-				$content .= apply_filters("wqs_result_empty", $options["show_empty_message"], $options["class"], $options["post_type"]);
+			if (!$raw) {
+				if ($options['show_empty_message']) {
+					// No posts! Are you sure you spelled the post_type or category right?
+					$content .= apply_filters('wqs_result_empty', $options['show_empty_message'], $options['class'], $options['post_type']);
+				}
 			}
 		}
 
 		// End the wrapping entirely.
-		$footer = apply_filters("wqs_wrapper_end", $options["class"], $options["post_type"]);
+		if (!$raw) {
+			$footer = apply_filters('wqs_wrapper_end', $options['class'], $options['post_type']);
+		}
 
 		wp_reset_postdata();
 
+		if ($raw) {
+			// Called directly by a plugin or theme, return array of objects instead of string of content.
+			return $items;
+		}
+
+		// A string of content returned by shortcode call.
 		return $header . $content . $footer;
 	}
 }
-
-// Load up the default filters.
-require_once(plugin_dir_path(__FILE__) . "class-wqsdefaults.php");

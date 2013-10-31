@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: WPQuery Shortcode\n"
-"POT-Creation-Date: 2013-09-05 00:44-0700\n"
-"PO-Revision-Date: 2013-09-05 00:44-0700\n"
+"POT-Creation-Date: 2013-10-31 13:54-0700\n"
+"PO-Revision-Date: 2013-10-31 13:55-0700\n"
 "Last-Translator: Russ Porosky <indyarmy@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -14,6 +14,6 @@ msgstr ""
 "X-Poedit-SourceCharset: UTF-8\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: class-wqs.php:231
+#: class-wqs.php:224
 msgid "Sorry, no posts were found."
 msgstr ""

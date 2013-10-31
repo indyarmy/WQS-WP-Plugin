@@ -1,7 +1,6 @@
 <?php
 /**
  * WPQuery Shortcode.
- *
  * Use the [wqs][/wqs] shortcode as a wrapper for the WP_Query object.
  *
  * @package   WPQueryShortcode
@@ -13,7 +12,6 @@
 
 /**
  * Default filters for WQS shortcode callbacks.
- *
  * These filters will wrap the entire output in a DIV, uses H3 for the header text (if any), and each item in the loop
  * is an LI within a UL. If they are selected to be shown via shortcode parameters, the thumbnail (if any), excerpt and
  * date will all be wrapped with their own SPAN tags.
@@ -22,6 +20,114 @@
  * @author  Russ Porosky <russ@indyarmy.com>
  */
 class WQSDefaults {
+	static private $filters = array(
+		array(
+			'name' => 'wqs_wrapper_start',
+			'method' => 'wqs_wrapper_start',
+			'priority' => 999,
+			'args' => 1
+		),
+		array(
+			'name' => 'wqs_wrapper_end',
+			'method' => 'wqs_wrapper_end',
+			'priority' => 999,
+			'args' => 1
+		),
+		array(
+			'name' => 'wqs_header',
+			'method' => 'wqs_header',
+			'priority' => 999,
+			'args' => 1
+		),
+		array(
+			'name' => 'wqs_pre_results',
+			'method' => 'wqs_pre_results',
+			'priority' => 999,
+			'args' => 2
+		),
+		array(
+			'name' => 'wqs_post_results',
+			'method' => 'wqs_post_results',
+			'priority' => 999,
+			'args' => 1
+		),
+		array(
+			'name' => 'wqs_pre_item',
+			'method' => 'wqs_pre_item',
+			'priority' => 999,
+			'args' => 2
+		),
+		array(
+			'name' => 'wqs_post_item',
+			'method' => 'wqs_post_item',
+			'priority' => 999,
+			'args' => 1
+		),
+		array(
+			'name' => 'wqs_show_thumb',
+			'method' => 'wqs_show_thumb',
+			'priority' => 999,
+			'args' => 3
+		),
+		array(
+			'name' => 'wqs_show_excerpt',
+			'method' => 'wqs_show_excerpt',
+			'priority' => 999,
+			'args' => 3
+		),
+		array(
+			'name' => 'wqs_show_date',
+			'method' => 'wqs_show_date',
+			'priority' => 999,
+			'args' => 3
+		),
+		array(
+			'name' => 'wqs_result_empty',
+			'method' => 'wqs_result_empty',
+			'priority' => 999,
+			'args' => 1
+		)
+	);
+
+	/**
+	 * Install the default filters.
+	 */
+	public static function install_filters() {
+		foreach (self::$filters as $filter) {
+			if (!has_filter($filter['name'], array('WQSDefaults', $filter['method']))) {
+				add_filter($filter['name'], array('WQSDefaults', $filter['method']), $filter['priority'], $filter['args']);
+			}
+		}
+	}
+
+	/**
+	 * Remove a single default filter.
+	 *
+	 * @param string $name
+	 */
+	public static function remove_filter($name = '') {
+		foreach (self::$filters as $filter) {
+			if (strtolower($filter['name']) == trim(strtolower($name))) {
+				if (has_filter($filter['name'], array('WQSDefaults', $filter['method']))) {
+					remove_filter($filter['name'], array('WQSDefaults', $filter['method']), $filter['priority']);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Remove all default filters.
+	 * NOTE: Without any filters, this plugin probably doesn't do much for you. Unless, of course, you're using it to
+	 * write another plugin with :)
+	 */
+	public static function remove_all_filters() {
+		foreach (self::$filters as $filter) {
+			if (has_filter($filter['name'], array('WQSDefaults', $filter['method']))) {
+				remove_filter($filter['name'], array('WQSDefaults', $filter['method']), $filter['priority']);
+			}
+		}
+	}
+
 	/**
 	 * Wrap the whole output with a DIV tag.
 	 *
@@ -58,7 +164,7 @@ class WQSDefaults {
 	/**
 	 * Wrap the loop output with a UL tag.
 	 *
-	 * @param string $class The class parameter you should probably use on your output wrapper.
+	 * @param string $class     The class parameter you should probably use on your output wrapper.
 	 * @param string $post_type The post type requested by the shortcode (the item post type may be different in the future).
 	 *
 	 * @return string The opening loop wrapper HTML (or whatever), below the header.
@@ -79,7 +185,7 @@ class WQSDefaults {
 	/**
 	 * Wrap each loop result with an LI tag.
 	 *
-	 * @param string $class The class parameter you should probably use on your result output wrapper.
+	 * @param string $class     The class parameter you should probably use on your result output wrapper.
 	 * @param string $post_type The actual post type of the item (may be different than the requested post type in the future).
 	 *
 	 * @return string The HTML (or whatever) that goes immediately before each item.
@@ -100,9 +206,9 @@ class WQSDefaults {
 	/**
 	 * If there's a featured image, wrap it with a SPAN tag and send it back.
 	 *
-	 * @param string $thumb For now, this is a NULL string.
-	 * @param int $post_id The ID of the current item.
-	 * @param string $class The class parameter you should probably use around the thumbnail.
+	 * @param string $thumb   For now, this is a NULL string.
+	 * @param int    $post_id The ID of the current item.
+	 * @param string $class   The class parameter you should probably use around the thumbnail.
 	 *
 	 * @return string The HTML (or whatever) representing the featured image - you are responsible for calling `get_the_post_thumbnail($post_id, "thumbnail")`.
 	 */
@@ -117,8 +223,8 @@ class WQSDefaults {
 	 * Wrap the excerpt in a SPAN tag.
 	 *
 	 * @param string $excerpt The excerpt for the item.
-	 * @param int $post_id The ID of the current item.
-	 * @param string $class The class parameter you should probably use around the excerpt.
+	 * @param int    $post_id The ID of the current item.
+	 * @param string $class   The class parameter you should probably use around the excerpt.
 	 *
 	 * @return string The HTML (or whatever) representing the excerpt.
 	 */
@@ -129,9 +235,9 @@ class WQSDefaults {
 	/**
 	 * Wrap the item publish date in a SPAN tag.
 	 *
-	 * @param string $date The date the item was published, in the default WP date format.
-	 * @param int $post_id The ID of the current item.
-	 * @param string $class The class parameter you should probably use around the date.
+	 * @param string $date    The date the item was published, in the default WP date format.
+	 * @param int    $post_id The ID of the current item.
+	 * @param string $class   The class parameter you should probably use around the date.
 	 *
 	 * @return string The HTML (or whatever) representing the date string.
 	 */

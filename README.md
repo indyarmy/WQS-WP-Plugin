@@ -2,23 +2,69 @@
 
 Contributors: indyarmy
 Donate link: http://indyarmy.com/wpquery-shortcode/
-Tags: query, wpquery, shortcode
+Tags: query, wpquery, shortcode, wp_query, loop
 Requires at least: 3.5
-Tested up to: 3.6
-Stable tag: 1.0.0
+Tested up to: 3.7
+Stable tag: 1.1.0
 License: MIT
 License URI: http://opensource.org/licenses/MIT
 
-A shortcode wrapper for WP_Query.
+A lightweight plugin that wraps the functionality of WP_Query in an easy-to-use shortcode.
 
 ## Description ##
-**WPQuery Shortcode** is a lightweight shortcode that wraps the functionality of WP_Query.
+**WPQuery Shortcode** is a lightweight plugin that wraps the functionality of WP_Query in an easy-to-use shortcode.
 
-Several filters are built in to allow all kinds of messing with how the output is displayed. From a simple "Recent Posts" block on your page to displaying upcoming events from your calendar plugin to showing the most visited job postings, **WPQuery Shortcode** can do it all.
+Several filters are built in to allow all kinds of messing with how the output is displayed. From a simple "Recent Posts" block on your page to displaying upcoming events from your calendar plugin to showing the most visited job postings, **WPQuery Shortcode** makes it easy.
+
+### Examples ###
+The most basic example is this:
+
+	[wqs][/wqs]
+
+Which returns the following HTML by default:
+
+	<div class="wqs_list">
+	    <ul class="wqs_list_post_wrap">
+	+--     <li class="wqs_list_post_item">
+	|           <a href="…" class="wqs_title">Title One</a>
+	| 5x        <span class="wqs_list_wqs_excerpt">
+	|               <p>This is the excerpt text.</p>
+	|           </span>
+	+--     </li>
+	    </ul>
+	</div>
+
+If you want to use a `section` tag instead of a `div` tag, use the following filters to override the defaults:
+
+    function wqs_wrapper_start($class) {
+        return "<section class=\"{$class}\">";
+    }
+    WQSDefaults::remove_filter('wqs_wrapper_start');        // Removes the default filter
+    add_filter('wqs_wrapper_start', 'wqs_wrapper_start');
+
+    function wqs_wrapper_end() {
+    	return "</section>";
+    }
+    WQSDefaults::remove_filter('wqs_wrapper_end');          // Removes the default filter
+    add_filter('wqs_wrapper_end', 'wqs_wrapper_end');
+
+If you want to use the plugin within another plugin or directly from your `functions.php` file in order to save yourself some trouble with The Loop:
+
+    WQSDefaults::remove_all_filters();                      // Removes all default filters
+    // Add your own filters here.
+    $wqs = WQS::get_instance();
+    $items = $wqs->wqs(array(
+        'cat' => 3,
+        // More WP_Query parameters here
+    ), 'Some header text here', TRUE);                      // Third param returns an array instead of a string.
+    foreach ($items as $id => $item) {
+        // do stuff
+    }
 
 ## Installation ##
 1. Upload the `wpquery-shortcode` folder to your `wp-content/plugins/` folder
 2. Activate the plugin
+3. In your post or page (or anyplace that shortcodes are parsed), place the shortcode `[wqs]Most Recent Posts[/wqs]`
 
 ## Options ##
 WQS has a few attributes that do not belong to the WP_Query class.
@@ -168,24 +214,6 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
   * `$query` - the actual `WP_Query` object
   * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Default** there is currently no default action associated with this hook
-  
-## Examples ##
-The most basic example is this:
-
-	[wqs][/wqs]
-
-Which returns the following HTML by default:
-
-	<div class="wqs_list">
-	    <ul class="wqs_list_post_wrap">
-	+--     <li class="wqs_list_post_item">
-	|           <a href="…" class="wqs_title">Title One</a>
-	| 5x        <span class="wqs_list_wqs_excerpt">
-	|               <p>This is the excerpt text.</p>
-	|           </span>
-	+--     </li>
-	    </ul>
-	</div>
 
 ## Changelog ##
 **1.0.0**
