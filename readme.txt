@@ -215,6 +215,14 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * **Default** there is currently no default action associated with this hook
 
 == Changelog ==
+**1.1.0**
+
+* Documentation improvements
+* added *raw* mode for theme and plugin authors
+* added convenience functions for remove_filter and remove_all_filters to remove a single default filter or all default filters, respectively
+* show_excerpt now defaults to TRUE
+* more consistent escaping in default filters
+
 **1.0.0**
 
 * Initial release
