@@ -14,7 +14,7 @@
  * Plugin Name: WPQuery Shortcode
  * Plugin URI:  http://indyarmy.com/wpquery-shortcode/
  * Description: A WPQuery shortcode wrapper.
- * Version:     1.0.0
+ * Version:     1.1.1
  * Author:      Russ Porosky <russ@indyarmy.com>
  * Author URI:  http://indyarmy.com/
  * Text Domain: wqs
