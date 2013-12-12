@@ -98,8 +98,8 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed after the options have been combined
 * intended to give theme authors the opportunity to mess with the query arguments, including adding advanced `tax_query` or `meta_query` arrays
 * includes two parameters:
-  * `$options` the complete array of attributes being passed to `WP_Query`
-  * `$post_type` the post type from the shortcode (eg. `post`, `attachment`, `movie`)
+  * `$options` - the complete array of attributes being passed to `WP_Query`
+  * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** the modified `$options` array
 * **Default** the unmodified `$options` array
 
@@ -116,9 +116,9 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed immediately after the `wqs_wrapper_start` filter
 * intended to allow theme authors to mess with the passed shortcode content (which is, itself, intended to be the header for the resulting list)
 * passed three parameters:
-  * `$header` the content between the `[wqs]` and `[/wqs]` tags
-  * `$class` the CSS class from the shortcode
-  * `$post_type` the post type from the shortcode (eg. `post`, `attachment`, `movie`)
+  * `$header` - the content between the `[wqs]` and `[/wqs]` tags
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** a header to display above the resulting list
 * **Default** `<h3>$header</h3>` or `NULL` if `$header` is empty
 
@@ -126,8 +126,8 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed before The Loop begins, but after we have confirmed there is at least one result to display
 * intended to allow theme authors to customize the wrapper for the result list itself
 * passed two parameters:
-  * `$class` the CSS class from the shortcode
-  * `$post_type` the post type from the shortcode (eg. `post`, `attachment`, `movie`)
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** an opening wrapper element for the list of results
 * **Default** `<ul class="{$class}_{$post_type}_wrap">`
 
@@ -135,17 +135,27 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed before each item in the result list
 * intended to allow theme authors to customize the element that wraps each item in the list
 * passed two parameters:
-  * `$class` the CSS class from the shortcode
-  * `$post_type` the actual post type (eg. `post`, `attachment`, `movie`)
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
 * **Return** an opening wrapper element for the current item
 * **Default** `<li class="{$class}_{$post_type}_item">`
+
+#### `wqs_item_link` ####
+* executed within the Loop
+* passed four parameters
+  * `$permalink` - the WordPress generated permalink URL to the item
+  * `$title` - the title of the soon-to-be-displayed item (be it post, page, comment, or whatever)
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
+* **Return** a link to the post
+* **Default** `<a href="{$permalink}" class="{$class}_title">{$title}</a>`
 
 #### `wqs_show_thumb` ####
 * executed within the Loop
 * passed four parameters:
   * `$thumb` - an empty string
   * `$post_id` - the ID of the current post (same as `get_the_ID()` function)
-  * `$class` the CSS class from the shortcode
+  * `$class` - the CSS class from the shortcode
   * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
 * **Return** ideally, the thumbnail
 * **Default** `<span class="{$class}_wqs_thumb"><img src="…" /></span>` or `$thumb` if the call to `has_post_thumbnail($post_id)` fails
@@ -155,7 +165,7 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * passed four parameters:
   * `$excerpt` - a string containing the result of a call to `get_the_excerpt()`; should be modified and `return`ed
   * `$post_id` - the ID of the current post (same as `get_the_ID()` function)
-  * `$class` the CSS class from the shortcode
+  * `$class` - the CSS class from the shortcode
   * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
 * **Return** an excerpt for the current post
 * **Default** `<span class="{$class}_wqs_excerpt">$excerpt</span>`
@@ -165,7 +175,7 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * passed four parameters:
   * `$date` - a string containing the result of a call to `get_the_date()`; should be modified and `return`ed
   * `$post_id` - the ID of the current post (same as `get_the_ID()` function)
-  * `$class` the CSS class from the shortcode
+  * `$class` - the CSS class from the shortcode
   * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
 * **Return** a date string to display
 * **Default** `<span class="{$class}_wqs_date">$date</span>`
@@ -174,8 +184,8 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed after each item in the result list
 * intended to allow theme authors to customize the element that wraps each item in the list
 * passed two parameters:
-  * `$class` the CSS class from the shortcode
-  * `$post_type` the actual post type (eg. `post`, `attachment`, `movie`)
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the actual post type (eg. `post`, `attachment`, `movie`)
 * **Return** a closing wrapper element for the current item
 * **Default** `</li>`
 
@@ -183,8 +193,8 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * executed after The Loop finishes, but only if at least one result existed
 * intended to allow theme authors to customize the wrapper for the result list itself
 * passed two parameters:
-  * `$class` the CSS class from the shortcode
-  * `$post_type` the post type from the shortcode (eg. `post`, `attachment`, `movie`)
+  * `$class` - the CSS class from the shortcode
+  * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** a closing wrapper element for the list of results
 * **Default** `</ul>`
 
@@ -200,7 +210,7 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 #### `wqs_result_empty` ####
 * executed after the `wqs_header` filter if there are no results
 * passed three parameters:
-  * `$message` the `show_empty_message` value from the shortcode
+  * `$message` - the `show_empty_message` value from the shortcode
   * `$class` - the CSS class from the shortcode
   * `$post_type` - the post type from the shortcode (eg. `post`, `attachment`, `movie`)
 * **Return** the message to display if no posts are found
