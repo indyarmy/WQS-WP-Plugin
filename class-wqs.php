@@ -310,7 +310,7 @@ class WQS {
 					// Need to stick anything in front of each item? Like an <li> element or something?
 					$content .= apply_filters('wqs_pre_item', $options['class'], $post_type);
 
-					$content .= '<a href="' . get_permalink() . '" class="' . $options["class"] . '_title">' . get_the_title() . '</a>';
+					$content .= apply_filters('wqs_item_link', get_permalink(), get_the_title(), $options['class'], $post_type);
 
 					if ($options['show_thumb']) {
 						$content .= apply_filters('wqs_show_thumb', '', $id, $options['class'], $post_type);

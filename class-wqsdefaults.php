@@ -70,6 +70,12 @@ class WQSDefaults {
 			'args' => 1
 		),
 		array(
+			'name' => 'wqs_item_link',
+			'method' => 'wqs_item_link',
+			'priority' => 999,
+			'args' => 4
+		),
+		array(
 			'name' => 'wqs_show_thumb',
 			'method' => 'wqs_show_thumb',
 			'priority' => 999,
@@ -112,6 +118,7 @@ class WQSDefaults {
 	 * Remove a single default filter.
 	 *
 	 * @since 1.1.0
+	 *
 	 * @param string $name
 	 */
 	public static function remove_filter($name = '') {
@@ -143,6 +150,7 @@ class WQSDefaults {
 	 * Wrap the whole output with a DIV tag.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $class The class parameter you should probably use on your output wrapper.
 	 *
 	 * @return string The opening wrapper HTML (or whatever).
@@ -165,6 +173,7 @@ class WQSDefaults {
 	 * Spit out an H3 wrapper header (if there is one).
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $header The text between the [wqs][/wqs] tags.
 	 *
 	 * @return string The HTML (or whatever) that can be used as a heading for the output.
@@ -179,6 +188,7 @@ class WQSDefaults {
 	 * Wrap the loop output with a UL tag.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $class     The class parameter you should probably use on your output wrapper.
 	 * @param string $post_type The post type requested by the shortcode (the item post type may be different in the future).
 	 *
@@ -202,6 +212,7 @@ class WQSDefaults {
 	 * Wrap each loop result with an LI tag.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $class     The class parameter you should probably use on your result output wrapper.
 	 * @param string $post_type The actual post type of the item (may be different than the requested post type in the future).
 	 *
@@ -222,9 +233,26 @@ class WQSDefaults {
 	}
 
 	/**
+	 * Display the title as a link to the item content.
+	 *
+	 * @since 1.1.2
+	 *
+	 * @param string $permalink The WordPress generated permalink URL to the item.
+	 * @param string $title     The title of the soon-to-be-displayed item (be it post, page, comment, or whatever).
+	 * @param string $class     The class parameter you should probably use on your result output wrapper.
+	 * @param string $post_type The actual post type of the item (may be different than the requested post type in the future).
+	 *
+	 * @return string
+	 */
+	public static function wqs_item_link($permalink, $title, $class, $post_type) {
+		return "<a href=\"{$permalink}\" class=\"{$class}_title\">{$title}</a>";
+	}
+
+	/**
 	 * If there's a featured image, wrap it with a SPAN tag and send it back.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $thumb   For now, this is a NULL string.
 	 * @param int    $post_id The ID of the current item.
 	 * @param string $class   The class parameter you should probably use around the thumbnail.
@@ -242,6 +270,7 @@ class WQSDefaults {
 	 * Wrap the excerpt in a SPAN tag.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $excerpt The excerpt for the item.
 	 * @param int    $post_id The ID of the current item.
 	 * @param string $class   The class parameter you should probably use around the excerpt.
@@ -256,6 +285,7 @@ class WQSDefaults {
 	 * Wrap the item publish date in a SPAN tag.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $date    The date the item was published, in the default WP date format.
 	 * @param int    $post_id The ID of the current item.
 	 * @param string $class   The class parameter you should probably use around the date.
@@ -270,6 +300,7 @@ class WQSDefaults {
 	 * Wrap the empty message with P tags.
 	 *
 	 * @since 1.0.0
+	 *
 	 * @param string $message The message to display if no items were found.
 	 *
 	 * @return string The HTML (or whatever) representing the "No Posts Found" message string.
