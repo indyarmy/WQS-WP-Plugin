@@ -22,7 +22,7 @@ nbproject
 *.sublime-project
 *.sublime-workspace
 *.pydevproject
-$.iml
+*.iml
 .idea
 
 # Dreamweaver added files
