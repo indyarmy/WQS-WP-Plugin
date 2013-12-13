@@ -4,7 +4,7 @@ Contributors: indyarmy
 Donate link: http://indyarmy.com/wpquery-shortcode/
 Tags: query, wpquery, shortcode, wp_query, loop
 Requires at least: 3.5
-Tested up to: 3.7
+Tested up to: 3.8
 Stable tag: 1.1.2
 License: MIT
 License URI: http://opensource.org/licenses/MIT
