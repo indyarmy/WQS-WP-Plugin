@@ -26,7 +26,7 @@ class WQS {
 	 * @since 1.0.0
 	 * @var string
 	 */
-	protected $version = "1.1.1";
+	protected $version = "1.1.2";
 
 	/**
 	 * Unique identifier for your plugin.

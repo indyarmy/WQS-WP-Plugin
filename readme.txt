@@ -4,7 +4,7 @@ Link: http://indyarmy.com/wpquery-shortcode/
 Tags: query, wpquery, shortcode, wp_query, loop
 Requires at least: 3.5
 Tested up to: 3.7
-Stable tag: 1.1.1
+Stable tag: 1.1.2
 License: MIT
 License URI: http://opensource.org/licenses/MIT
 
@@ -225,6 +225,12 @@ WQS includes a few filter and action hooks for your hacking and themeing pleasur
 * **Default** there is currently no default action associated with this hook
 
 == Changelog ==
+**1.1.2**
+
+* added `wqs_item_link` filter for modifying post titles and links
+* Documentation update
+* Docblocks made more consistent
+
 **1.1.1**
 
 * Documentation improvements
